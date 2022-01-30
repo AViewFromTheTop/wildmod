@@ -28,15 +28,15 @@ public class SculkGrower {
                 if (SculkTags.THREE.contains(entity.getType())) {
                     sculkOptim(3, 4, down, world);
                 } else if (SculkTags.FIVE.contains(entity.getType())) {
-                    sculkOptim(4, 5, down, world);
+                    sculkOptim(5, 5, down, world);
                 } else if (SculkTags.TEN.contains(entity.getType())) {
-                    sculkOptim(9, 10, down, world);
+                    sculkOptim(10, 10, down, world);
                 } else if (SculkTags.TWENTY.contains(entity.getType())) {
-                    sculkOptim(19, 20, down, world);
+                    sculkOptim(20, 20, down, world);
                 } else if (SculkTags.FIFTY.contains(entity.getType())) {
-                    sculkOptim(59, 50, down, world);
+                    sculkOptim(50, 50, down, world);
                 } else if (SculkTags.ONEHUNDRED.contains(entity.getType())) {
-                    sculkOptim(1599, 33, down, world);
+                    sculkOptim(1000, 33, down, world);
                 } else if (world.getGameRules().getBoolean(WildMod.CATALYST_DETECTS_ALL)) {
                     sculkOptim((UniformIntProvider.create(1, 7).get(world.getRandom())), (UniformIntProvider.create(1, 7).get(world.getRandom())), down, world);
                 }
@@ -57,10 +57,11 @@ public class SculkGrower {
             if (!succeed) { ++timesFailed; } else { ++l; }
             if (timesFailed>=groupsFailed*7) {
                 ++groupsFailed;
-                }
+            }
             if (rVal2>64) { break; }
         }
     }
+
     public boolean placeSculk(BlockPos blockPos, World world) { //Call For Sculk & Call For Veins
         BlockPos NewSculk;
         if (SculkTags.BLOCK_REPLACEABLE.contains(world.getBlockState(blockPos).getBlock()) && SculkTags.SCULK_REPLACEABLE.contains(world.getBlockState(blockPos.up()).getBlock())) {
@@ -75,7 +76,6 @@ public class SculkGrower {
             }
         } else if (solid(world, sculkCheck(blockPos, world, blockPos))) {
             NewSculk = sculkCheck(blockPos, world, blockPos);
-            SculkTags.SCULK.contains(world.getBlockState(NewSculk.up()).getBlock());
             if (!SculkTags.SCULK.contains(world.getBlockState(NewSculk.up()).getBlock())) {
                 veins(NewSculk, world);
                 return true;
@@ -225,11 +225,26 @@ public class SculkGrower {
 
     /** CAlCULATIONS & CHECKS */
     public BlockPos sculkCheck(BlockPos blockPos, World world, BlockPos blockPos2) { //Call For Up&Down Checks
-        if (checkPt1(blockPos, world).getY()!=-64) {
+        if (checkPtA(blockPos, world).getY()!=-64) {
+            return checkPtA(blockPos, world);
+        } else if (checkPt1(blockPos, world).getY()!=-64) {
             return checkPt1(blockPos, world);
         } else if (checkPt2(blockPos, world).getY()!=-64) {
             return checkPt2(blockPos, world);
         } else { return blockPos2; }
+    }
+    public BlockPos checkPtA(BlockPos blockPos, World world) {
+        int downward = 8;
+        int MIN = world.getBottomY();
+        if (blockPos.getY() - downward <= MIN) {
+            downward = (blockPos.getY()-MIN)-1;
+        }
+        for (int h = 0; h < downward; h++) {
+            if (solrepsculk(world, blockPos.down(h))) {
+                return blockPos.down(h);
+            }
+        }
+        return new BlockPos(0,-64,0);
     }
     public BlockPos checkPt1(BlockPos blockPos, World world) { //Check For Valid Placement Above
         int upward = world.getGameRules().getInt(WildMod.UPWARD_SPREAD);

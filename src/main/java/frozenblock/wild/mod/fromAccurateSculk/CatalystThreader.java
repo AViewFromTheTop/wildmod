@@ -1,12 +1,10 @@
 package frozenblock.wild.mod.fromAccurateSculk;
 
 import frozenblock.wild.mod.WildMod;
-import frozenblock.wild.mod.blocks.SculkBlock;
 import frozenblock.wild.mod.blocks.SculkShriekerBlock;
 import frozenblock.wild.mod.blocks.SculkVeinBlock;
 import frozenblock.wild.mod.registry.RegisterBlocks;
 import frozenblock.wild.mod.registry.RegisterSounds;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.enums.SculkSensorPhase;
@@ -24,7 +22,6 @@ import java.util.Objects;
 import static java.lang.Math.*;
 
 public class CatalystThreader {
-    public static int running;
 
     public static void main(World world, BlockPos blockPos, int l, int r, int div, int chance) throws InterruptedException {
         float threads = world.getGameRules().getInt(WildMod.SCULK_THREADS);
@@ -40,7 +37,6 @@ public class CatalystThreader {
                     T1.r = r;
                     T1.setPriority(Thread.MAX_PRIORITY);
                     T1.start();
-                    T1.join();
                 }
                 ActivatorThread T2 = new ActivatorThread("activatorThread");
                 T2.blockPos = blockPos;
@@ -61,7 +57,6 @@ public class CatalystThreader {
                             T1.r = r;
                             T1.setPriority(Thread.MAX_PRIORITY);
                             T1.start();
-                        T1.join();
                         }
                     ActivatorThread T2 = new ActivatorThread("activatorThread");
                     T2.blockPos = blockPos;
@@ -79,7 +74,6 @@ public class CatalystThreader {
                     T1.setPriority(Thread.MAX_PRIORITY);
                     T1.l = div;
                     T1.start();
-                    T1.join();
                 }
                 ActivatorThread T2 = new ActivatorThread("activatorThread");
                 T2.blockPos = blockPos;
@@ -230,17 +224,17 @@ class SculkThread extends Thread {
         }
     }
 
-    public void sculkOptim(float loop, int rVal, BlockPos down, World world) { //Call For Sculk Placement & Increase Radius If Stuck
+    public void sculkOptim(float loop, int rVal, BlockPos down, World world) throws InterruptedException { //Call For Sculk Placement & Increase Radius If Stuck
         int rVal2 = MathHelper.clamp(rVal*world.getGameRules().getInt(WildMod.SCULK_MULTIPLIER),1, 64);
         int timesFailed=0;
         int groupsFailed=1;
         float fLoop = loop * world.getGameRules().getInt(WildMod.SCULK_MULTIPLIER);
 
         for (int l = 0; l < fLoop;) {
+            Thread.sleep(5);
             double a = random() * 2 * PI;
             double r = sqrt((rVal2+(timesFailed/7))) * sqrt(random());
-            boolean succeed = placeSculk(down.add((int) (r * sin(a)), 0, (int) (r * cos(a))), world);
-            if (!succeed) { ++timesFailed; } else { ++l; }
+            if (!placeSculk(down.add((int) (r * sin(a)), 0, (int) (r * cos(a))), world)) { ++timesFailed; } else { ++l; }
             if (timesFailed>=groupsFailed*7) {
                 ++groupsFailed;
             }
@@ -262,7 +256,6 @@ class SculkThread extends Thread {
             }
         } else if (solid(world, sculkCheck(blockPos, world, blockPos))) {
             NewSculk = sculkCheck(blockPos, world, blockPos);
-            SculkTags.SCULK.contains(world.getBlockState(NewSculk.up()).getBlock());
             if (!SculkTags.SCULK.contains(world.getBlockState(NewSculk.up()).getBlock())) {
                 veins(NewSculk, world);
                 return true;
@@ -274,6 +267,7 @@ class SculkThread extends Thread {
     public void placeSculkOptim(BlockPos NewSculk, World world) { //Place Sculk & Call For Veins
         BlockState sculk = RegisterBlocks.SCULK.getDefaultState();
         veins(NewSculk, world);
+        callDestroy(world, NewSculk);
         callPlace(world, sculk, NewSculk);
         if (world.getBlockState(NewSculk.up()).getBlock()!= Blocks.WATER) {
             if (world.getBlockState(NewSculk.up()).contains(Properties.WATERLOGGED)&&world.getBlockState(NewSculk.up()).get(Properties.WATERLOGGED).equals(true)) {
@@ -285,12 +279,27 @@ class SculkThread extends Thread {
     public boolean solid(World world, BlockPos blockPos) {
         return (!world.getBlockState(blockPos).isAir() && !SculkTags.SCULK_UNTOUCHABLE.contains(world.getBlockState(blockPos).getBlock()));
     }
-    public BlockPos sculkCheck(BlockPos blockPos, World world, BlockPos blockPos2) {
-        if (checkPt1(blockPos, world).getY()!=-64) {
+    public BlockPos sculkCheck(BlockPos blockPos, World world, BlockPos blockPos2) { //Call For Up&Down Checks
+        if (checkPtA(blockPos, world).getY()!=-64) {
+            return checkPtA(blockPos, world);
+        } else if (checkPt1(blockPos, world).getY()!=-64) {
             return checkPt1(blockPos, world);
         } else if (checkPt2(blockPos, world).getY()!=-64) {
             return checkPt2(blockPos, world);
         } else { return blockPos2; }
+    }
+    public BlockPos checkPtA(BlockPos blockPos, World world) {
+        int downward = 8;
+        int MIN = world.getBottomY();
+        if (blockPos.getY() - downward <= MIN) {
+            downward = (blockPos.getY()-MIN)-1;
+        }
+        for (int h = 0; h < downward; h++) {
+            if (solrepsculk(world, blockPos.down(h))) {
+                return blockPos.down(h);
+            }
+        }
+        return new BlockPos(0,-64,0);
     }
     public BlockPos checkPt1(BlockPos blockPos, World world) {
         int upward = world.getGameRules().getInt(WildMod.UPWARD_SPREAD);
