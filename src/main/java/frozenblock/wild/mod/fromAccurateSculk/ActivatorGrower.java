@@ -41,7 +41,6 @@ public class ActivatorGrower {
     }
 
     public void placeActiveOmptim(int loop, int rVal, int CHANCE, BlockPos pos, LivingEntity entity) { //Call For Placement
-        if (!entity.world.getGameRules().getBoolean(WildMod.SCULK_THREADING)) {
             placeActivator(pos, entity.world, CHANCE);
             for (int l = 0; l < (loop * entity.world.getGameRules().getInt(WildMod.SCULK_MULTIPLIER)); ++l) {
                 double a = random() * 2 * PI;
@@ -51,7 +50,6 @@ public class ActivatorGrower {
                 placeActivator(pos.add(x, 0, y), entity.world, CHANCE);
             }
         }
-    }
 
     public void placeActivator(BlockPos blockPos, World world, int chance) { //Place Activators
         BlockState sculk = RegisterBlocks.SCULK.getDefaultState();
