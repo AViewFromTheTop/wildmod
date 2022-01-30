@@ -24,7 +24,6 @@ public class SculkGrower {
         if (entity!=null) {
             world.playSound(null, blockPos, RegisterSounds.BLOCK_SCULK_CATALYST_BLOOM, SoundCategory.BLOCKS, 1F, 1F);
             BlockPos down = blockPos.down();
-            if (!world.getGameRules().getBoolean(WildMod.SCULK_THREADING)) {
                 if (SculkTags.THREE.contains(entity.getType())) {
                     sculkOptim(3, 4, down, world);
                 } else if (SculkTags.FIVE.contains(entity.getType())) {
@@ -42,7 +41,6 @@ public class SculkGrower {
                 }
             }
         }
-    }
 
     public void sculkOptim(float loop, int rVal, BlockPos down, World world) { //Call For Sculk Placement & Increase Radius If Stuck
         int rVal2 = MathHelper.clamp(rVal*world.getGameRules().getInt(WildMod.SCULK_MULTIPLIER),1, 64);
