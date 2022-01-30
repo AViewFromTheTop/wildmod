@@ -4,7 +4,6 @@ import frozenblock.wild.mod.WildMod;
 import frozenblock.wild.mod.blocks.SculkVeinBlock;
 import frozenblock.wild.mod.registry.RegisterBlocks;
 import frozenblock.wild.mod.registry.RegisterSounds;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
@@ -46,30 +45,24 @@ public class SculkGrower {
     }
 
     public void sculkOptim(float loop, int rVal, BlockPos down, World world) { //Call For Sculk Placement & Increase Radius If Stuck
-        placeSculk(down, world);
-        rVal = MathHelper.clamp(rVal,1, 48);
+        int rVal2 = MathHelper.clamp(rVal*world.getGameRules().getInt(WildMod.SCULK_MULTIPLIER),1, 64);
         int timesFailed=0;
+        int groupsFailed=1;
         float fLoop = loop * world.getGameRules().getInt(WildMod.SCULK_MULTIPLIER);
-        for (int l = 0; l < fLoop; ++l) {
+
+        for (int l = 0; l < fLoop;) {
             double a = random() * 2 * PI;
-            double r = sqrt(rVal*world.getGameRules().getInt(WildMod.SCULK_MULTIPLIER)) * sqrt(random());
-            int x = (int) (r * cos(a));
-            int z = (int) (r * sin(a));
-            boolean succeed = placeSculk(down.add(x, 0, z), world);
-            if (!succeed && rVal<48) {
-                --l;
-                ++timesFailed;
-            } else if (timesFailed>0) {
-                --timesFailed;
-            }
-            if (timesFailed>=rVal && rVal<48) {
-                ++rVal;
-                timesFailed=0;
-            }
+            double r = sqrt((rVal2+(timesFailed/7))) * sqrt(random());
+            boolean succeed = placeSculk(down.add((int) (r * sin(a)), 0, (int) (r * cos(a))), world);
+            if (!succeed) { ++timesFailed; } else { ++l; }
+            if (timesFailed>=groupsFailed*7) {
+                ++groupsFailed;
+                }
+            if (rVal2>64) { break; }
         }
     }
     public boolean placeSculk(BlockPos blockPos, World world) { //Call For Sculk & Call For Veins
-        BlockPos NewSculk ;
+        BlockPos NewSculk;
         if (SculkTags.BLOCK_REPLACEABLE.contains(world.getBlockState(blockPos).getBlock()) && SculkTags.SCULK_REPLACEABLE.contains(world.getBlockState(blockPos.up()).getBlock())) {
             NewSculk = blockPos;
             placeSculkOptim(NewSculk, world);
@@ -82,8 +75,11 @@ public class SculkGrower {
             }
         } else if (solid(world, sculkCheck(blockPos, world, blockPos))) {
             NewSculk = sculkCheck(blockPos, world, blockPos);
-            veins(NewSculk, world);
-            return didSucceed(world, NewSculk);
+            SculkTags.SCULK.contains(world.getBlockState(NewSculk.up()).getBlock());
+            if (!SculkTags.SCULK.contains(world.getBlockState(NewSculk.up()).getBlock())) {
+                veins(NewSculk, world);
+                return true;
+            }
         }
         return false;
     }
@@ -114,7 +110,7 @@ public class SculkGrower {
         if (SculkTags.SCULK_REPLACEABLE.contains(world.getBlockState(blockPos.add(0, 1, 1)).getBlock()) && solid(world, blockPos.add(0, 0, 1)) && airveins(world, blockPos.add(0, 0, 1))) {
             veinPlaceOptim(blockPos.add(0,1,1), world);
         } else if (sculkCheck(blockPos.add(0, 1, 1), world, blockPos) != blockPos.add(0, 1, 1) && solidrep(world, sculkCheck(blockPos.add(0, 1, 1), world, blockPos)) && airveins(world, sculkCheck(blockPos.add(0, 1, 1), world, blockPos))) {
-            veinPlaceOptim(sculkCheck(blockPos.add(0,1,0), world, blockPos).up(), world);
+            veinPlaceOptim(sculkCheck(blockPos.add(0,1,1), world, blockPos).up(), world);
         }
         if (SculkTags.SCULK_REPLACEABLE.contains(world.getBlockState(blockPos.add(0, 1, -1)).getBlock()) && solid(world, blockPos.add(0, 0, -1)) && airveins(world, blockPos.add(0, 0, -1))) {
             veinPlaceOptim(blockPos.add(0, 1, -1), world);
@@ -274,11 +270,6 @@ public class SculkGrower {
         } else if (SculkTags.SCULK_REPLACEABLE.contains(world.getBlockState(blockPos).getBlock())) {
             return false;
         } else return !SculkTags.SCULK_UNTOUCHABLE.contains(world.getBlockState(blockPos).getBlock());
-    }
-
-    public boolean didSucceed(World world, BlockPos blockPos) {
-        Block block = world.getBlockState(blockPos).getBlock();
-        return !SculkTags.SCULK.contains(world.getBlockState(blockPos.down()).getBlock()) && !SculkTags.SCULK.contains(world.getBlockState(blockPos.up()).getBlock()) && !SculkTags.SCULK.contains(block);
     }
 
     public boolean solid(World world, BlockPos blockPos) {
