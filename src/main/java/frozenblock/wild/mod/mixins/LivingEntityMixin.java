@@ -2,7 +2,6 @@ package frozenblock.wild.mod.mixins;
 
 import frozenblock.wild.mod.WildMod;
 import frozenblock.wild.mod.fromAccurateSculk.ActivatorGrower;
-import frozenblock.wild.mod.fromAccurateSculk.CatalystThreader;
 import frozenblock.wild.mod.fromAccurateSculk.SculkTags;
 import frozenblock.wild.mod.liukrastapi.Sphere;
 import frozenblock.wild.mod.registry.RegisterAccurateSculk;
@@ -10,7 +9,6 @@ import frozenblock.wild.mod.registry.RegisterBlocks;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.intprovider.UniformIntProvider;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -41,45 +39,10 @@ public class LivingEntityMixin {
 		if (entity.deathTime == 19 && !entity.world.isClient()) {
 			BlockPos pos = new BlockPos(entity.getBlockPos().getX(), entity.getBlockPos().getY(), entity.getBlockPos().getZ());
 			if (SculkTags.DROPSXP.contains(entity.getType()) && entity.world.getGameRules().getBoolean(WildMod.DO_CATALYST_POLLUTION)) {
-
-			if (Sphere.sphereBlock(RegisterBlocks.SCULK_CATALYST, entity.world, pos, 8)) {
-
-				if (!entity.world.getGameRules().getBoolean(WildMod.SCULK_THREADING)) {
-					new ActivatorGrower().startActivator(entity, pos);
-
-				} else if (entity.world.getGameRules().getBoolean(WildMod.SCULK_THREADING)) {
-						int numCatalysts = Sphere.generateSphere(pos, 8, false, entity.world);
-						if (SculkTags.THREE.contains(entity.getType())) {
-							entity.emitGameEvent(RegisterAccurateSculk.DEATH, entity, pos);
-							CatalystThreader.main(entity.world, pos, 3, 4, numCatalysts, 7);
-
-						} else if (SculkTags.FIVE.contains(entity.getType())) {
-							entity.emitGameEvent(RegisterAccurateSculk.DEATH, entity, pos);
-							CatalystThreader.main(entity.world, pos, 5, 5, numCatalysts, 7);
-
-						} else if (SculkTags.TEN.contains(entity.getType())) {
-							entity.emitGameEvent(RegisterAccurateSculk.DEATH, entity, pos);
-							CatalystThreader.main(entity.world, pos, 10, 10, numCatalysts, 6);
-
-						} else if (SculkTags.TWENTY.contains(entity.getType())) {
-							entity.emitGameEvent(RegisterAccurateSculk.DEATH, entity, pos);
-							CatalystThreader.main(entity.world, pos, 20, 20, numCatalysts, 9);
-
-						} else if (SculkTags.FIFTY.contains(entity.getType())) {
-							entity.emitGameEvent(RegisterAccurateSculk.DEATH, entity, pos);
-							CatalystThreader.main(entity.world, pos, 50, 50, numCatalysts, 14);
-
-						} else if (SculkTags.ONEHUNDRED.contains(entity.getType())) {
-							entity.emitGameEvent(RegisterAccurateSculk.DEATH, entity, pos);
-							CatalystThreader.main(entity.world, pos, 100, 33, numCatalysts, 20);
-
-						} else if (entity.world.getGameRules().getBoolean(WildMod.CATALYST_DETECTS_ALL)) {
-							entity.emitGameEvent(RegisterAccurateSculk.DEATH, entity, pos);
-							CatalystThreader.main(entity.world, pos, (UniformIntProvider.create(1, 7).get(entity.world.getRandom())) * numCatalysts, (UniformIntProvider.create(1, 7).get(entity.world.getRandom())), numCatalysts, 5);
-						}
-					}
+				if (Sphere.sphereBlock(RegisterBlocks.SCULK_CATALYST, entity.world, pos, 8)) {
+				new ActivatorGrower().startActivator(entity, pos);
 				}
 			}
 		}
-		}
 	}
+}
