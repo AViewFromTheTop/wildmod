@@ -31,6 +31,7 @@ public class FireflyEntity extends AnimalEntity implements Flutterer {
     public int spawnX;
     public int spawnY;
     public int spawnZ;
+    public long lastClientFlash;
 
     public FireflyEntity(EntityType<? extends AnimalEntity> entityType, World world) {
         super(entityType, world);

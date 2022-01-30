@@ -36,23 +36,24 @@ public class SculkSensorBlockMixin {
         LivingEntity target = (LivingEntity) world.getEntityById(lastEntity);
         BlockPos lastEventPos = SensorLastEntity.getLastPos(pos);
         GameEvent event = SensorLastEntity.getLastEvent(pos);
-
-        if (SculkSensorBlock.FREQUENCIES.containsKey(event) && target!=null && lastEventPos!=null) {
-            Box box = new Box(pos.getX()-18, pos.getY()-18, pos.getZ()-18, pos.getX()+18, pos.getY()+18, pos.getZ()+18);
-            List<WardenEntity> list = world.getNonSpectatingEntities(WardenEntity.class, box);
-            Iterator<WardenEntity> var11 = list.iterator();
-            WardenEntity wardenEntity;
-            while (var11.hasNext()) {
-                wardenEntity = var11.next();
-                if (wardenEntity.getBlockPos().isWithinDistance(pos, 16)) {
-                    if (event!=GameEvent.PROJECTILE_LAND && event!=GameEvent.BLOCK_DESTROY && event!=GameEvent.BLOCK_PLACE && event!=GameEvent.BLOCK_ATTACH
-                            && event!=GameEvent.BLOCK_CHANGE && event!=GameEvent.BLOCK_CLOSE && event!=GameEvent.BLOCK_OPEN && event!=GameEvent.BLOCK_PRESS
-                            && event!=GameEvent.BLOCK_SWITCH && event!=GameEvent.BLOCK_DETACH && event!=GameEvent.BLOCK_UNPRESS && event!=GameEvent.BLOCK_UNSWITCH
-                            && event!=GameEvent.RING_BELL) {
-                        wardenEntity.listen(lastEventPos, wardenEntity.getWorld(), target, wardenEntity.eventSuspicionValue(event,target), pos);
-                    } else {
-                        wardenEntity.listen(lastEventPos, wardenEntity.getWorld(), null, 1, pos);
-                   }
+        if (event != null && lastEntity != -1 && lastEventPos != null && target != null) {
+            if (SculkSensorBlock.FREQUENCIES.containsKey(event)) {
+                Box box = new Box(pos.getX() - 18, pos.getY() - 18, pos.getZ() - 18, pos.getX() + 18, pos.getY() + 18, pos.getZ() + 18);
+                List<WardenEntity> list = world.getNonSpectatingEntities(WardenEntity.class, box);
+                Iterator<WardenEntity> var11 = list.iterator();
+                WardenEntity wardenEntity;
+                while (var11.hasNext()) {
+                    wardenEntity = var11.next();
+                    if (wardenEntity.getBlockPos().isWithinDistance(pos, 16)) {
+                        if (event != GameEvent.PROJECTILE_LAND && event != GameEvent.BLOCK_DESTROY && event != GameEvent.BLOCK_PLACE && event != GameEvent.BLOCK_ATTACH
+                                && event != GameEvent.BLOCK_CHANGE && event != GameEvent.BLOCK_CLOSE && event != GameEvent.BLOCK_OPEN && event != GameEvent.BLOCK_PRESS
+                                && event != GameEvent.BLOCK_SWITCH && event != GameEvent.BLOCK_DETACH && event != GameEvent.BLOCK_UNPRESS && event != GameEvent.BLOCK_UNSWITCH
+                                && event != GameEvent.RING_BELL) {
+                            wardenEntity.listen(lastEventPos, wardenEntity.getWorld(), target, wardenEntity.eventSuspicionValue(event, target), pos);
+                        } else {
+                            wardenEntity.listen(lastEventPos, wardenEntity.getWorld(), null, 1, pos);
+                        }
+                    }
                 }
             }
         }

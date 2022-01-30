@@ -24,9 +24,11 @@ public class SculkSensorListenerMixin {
         SculkSensorListener listener = SculkSensorListener.class.cast(this);
         Optional<BlockPos> optional = listener.getPositionSource().getPos(world);
         if (optional.isPresent() && entity!=null && SculkSensorBlock.FREQUENCIES.containsKey(event)) {
-            BlockPos thisPos = (BlockPos)optional.get();
-            if (entity instanceof LivingEntity) {
-                SensorLastEntity.addEntity(entity, thisPos, pos, event);
+            BlockPos thisPos = (BlockPos) optional.get();
+            if (entity != null) {
+                if (entity instanceof LivingEntity) {
+                    SensorLastEntity.addEntity(entity, thisPos, pos, event);
+                }
             }
         }
         return info.getReturnValue();

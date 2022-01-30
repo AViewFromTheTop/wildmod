@@ -89,7 +89,7 @@ public class AbstractBlockMixin {
         if (world.isClient) {
             return;
         }
-        if(world.getBlockState(pos) == Blocks.SCULK_SENSOR.getDefaultState() && entity.getType()!=RegisterEntities.WARDEN) {
+        if(world.getBlockState(pos) == Blocks.SCULK_SENSOR.getDefaultState() && entity!=null && entity.getType()!=RegisterEntities.WARDEN) {
             if (entity instanceof LivingEntity) {
                 SensorLastEntity.addEntity(entity, pos, entity.getBlockPos(), null);
                 int lastEntity = SensorLastEntity.getLastEntity(pos);
@@ -110,6 +110,7 @@ public class AbstractBlockMixin {
             }
             SculkSensorBlock.setActive(world, pos, state, 15);
         }
+        assert entity != null;
         if(entity.getType()!=RegisterEntities.WARDEN && world.getBlockState(pos) == SculkShriekerBlock.SCULK_SHRIEKER_BLOCK.getDefaultState() || world.getBlockState(pos) == SculkShriekerBlock.SCULK_SHRIEKER_BLOCK.getDefaultState().with(Properties.WATERLOGGED, true)) {
             if (!ShriekCounter.findWarden(world, pos)) {
                 ((SculkShriekerBlock) Objects.requireNonNull(world.getBlockState(pos)).getBlock()).writeDir(world, pos, entity.getBlockPos());

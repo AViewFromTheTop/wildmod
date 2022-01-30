@@ -38,15 +38,17 @@
   "item.twm.tadpole_bucket": "Tétard dans un sceau",
 
   "block.twm.frog_spawn": "Frai de grenouille",
-  "block.twm.pearlescent_froglight": "Feu de grenouille nacrée",
-  "block.twm.verdant_froglight": "Feu de grenouille verdoyant",
-  "block.twm.ochre_froglight": "Feu de grenouille ocre",
+  "block.twm.pearlescent_froglight": "Froglight nacrée",
+  "block.twm.verdant_froglight": "Froglight verdoyant",
+  "block.twm.ochre_froglight": "Froglight ocre",
 
   "entity.twm.frog": "Grenouille",
   "entity.twm.warden": "Warden",
   "entity.twm.tadpole": "Tétard",
-  "entity.twm.mangrove_boat": "Bateau",
+  "entity.twm.mangrove_boat": "Bateau en mangrove",
   "entity.twm.chest_boat": "Bateau avec un coffre",
+
+  "effect.twm.darkness": "Obscurité",
 
   "item.twm.mangrove_boat": "Bateau en mangrove",
   "item.twm.oak_chest_boat": "Bateau avec un coffre en chêne",

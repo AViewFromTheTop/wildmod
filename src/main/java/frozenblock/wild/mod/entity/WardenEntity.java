@@ -33,7 +33,6 @@ import net.minecraft.sound.SoundEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.intprovider.UniformIntProvider;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.Vibration;
@@ -50,14 +49,22 @@ import java.util.Optional;
 
 public class WardenEntity extends HostileEntity {
     /** WELCOME TO THE WARDEN MUSEUM
+     * <p>
      * ALL THESE WILL LINK TO THE FIRST METHOD IN THEIR GIVEN SECTIONS
-     * SUSPICION {@link WardenEntity#addSuspicion(LivingEntity, int)}
-     * SNIFFING {@link WardenEntity#getSniffEntity()}
-     * ATTACKING & ROARING {@link WardenEntity#setRoarAnimationProgress(double)}
-     * NBT, VALUES & BOOLEANS {@link WardenEntity#writeCustomDataToNbt(NbtCompound)}
-     * OVERRIDES & NON-WARDEN-SPECIFIC {@link WardenEntity#getHurtSound(DamageSource)}
-     * VISUAlS {@link WardenEntity#CreateVibration(World, WardenEntity, BlockPos)}
-     * TICKMOVEMENT METHODS {@link WardenEntity#tickEmerge()}
+     * <li> SUSPICION {@link WardenEntity#addSuspicion(LivingEntity, int)}
+     * <p>
+     * <li> SNIFFING {@link WardenEntity#getSniffEntity()}
+     * <p>
+     * <li> ATTACKING & ROARING {@link WardenEntity#setRoarAnimationProgress(double)}
+     * <p>
+     * <li> NBT, VALUES & BOOLEANS {@link WardenEntity#writeCustomDataToNbt(NbtCompound)}
+     * <p>
+     * <li> OVERRIDES & NON-WARDEN-SPECIFIC {@link WardenEntity#getHurtSound(DamageSource)}
+     * <p>
+     * <li> VISUAlS {@link WardenEntity#CreateVibration(World, WardenEntity, BlockPos)}
+     * <p>
+     * <li> TICKMOVEMENT METHODS {@link WardenEntity#tickEmerge()}
+     * </ul><p>
      * ALL VALUES ARE STORED AT THE END OF THIS MUSEUM.
      * */
 
@@ -86,7 +93,7 @@ public class WardenEntity extends HostileEntity {
         //Heartbeat & Anger
         this.heartbeatTime = (int) (60 - ((MathHelper.clamp(this.trueOverallAnger(),0,45)*1.1)));
         if (this.world.getTime()>=this.nextHeartBeat) {
-            this.world.playSound(null, this.getBlockPos().up(), RegisterSounds.ENTITY_WARDEN_HEARTBEAT, SoundCategory.HOSTILE, 1F, (float) (0.85F + (MathHelper.clamp(this.overallAnger(),0,15)*0.02)));
+            this.world.playSound(null, this.getBlockPos().up(), RegisterSounds.ENTITY_WARDEN_HEARTBEAT, SoundCategory.HOSTILE, 1F, (float) (0.85F + (MathHelper.clamp(this.trueOverallAnger(),0,45)*0.0066)));
             this.nextHeartBeat=this.world.getTime()+heartbeatTime;
             this.lastHeartBeat=this.world.getTime();
             this.world.sendEntityStatus(this, (byte)8);
@@ -102,7 +109,7 @@ public class WardenEntity extends HostileEntity {
         } else if(!this.isAiDisabled() && status == 3) { //Set Roar Ticks
             this.roarTicksLeft1 = 10;
         } else if(!this.isAiDisabled() && status == 5) { //Emerging
-            this.emergeTicksLeft=120;
+            this.emergeTicksLeft=160;
             this.hasEmerged=false;
             world.playSound(null, this.getBlockPos(), RegisterSounds.ENTITY_WARDEN_EMERGE, SoundCategory.HOSTILE, 1F, 1F);
         } else if(!this.isAiDisabled() && status == 6) { //Digging Back
@@ -114,7 +121,7 @@ public class WardenEntity extends HostileEntity {
         } else if (!this.isAiDisabled() && status == 8) { //Set Last Client Beat Time
             this.lastClientHeartBeat=this.world.getTime();
         } else if (!this.isAiDisabled() && status == 9) { //Set Client Emerge Ticks
-            this.clientEmergeTicks=120;
+            this.clientEmergeTicks=160;
         } else if (!this.isAiDisabled() && status == 10) { //Set Client Dig Ticks
             this.clientDigTicks=60;
         } else if (!this.isAiDisabled() && status == 11) { //Set Client isEmerging
@@ -128,7 +135,7 @@ public class WardenEntity extends HostileEntity {
         } else if (!this.isAiDisabled() && status == 15) { //Set Client emergeStart
             this.emergeStart=this.world.getTime();
         } else if (!this.isAiDisabled() && status == 16) { //Set Client emergeStop
-            this.emergeStop=this.world.getTime()+120;
+            this.emergeStop=this.world.getTime()+160;
         } else if (!this.isAiDisabled() && status == 17) { //Set Client digStart
             this.digStart=this.world.getTime();
         } else if (!this.isAiDisabled() && status == 18) { //Set Client digStop
@@ -141,7 +148,9 @@ public class WardenEntity extends HostileEntity {
     }
 
     public void listen(BlockPos eventPos, World eventWorld, LivingEntity eventEntity, int suspicion, BlockPos vibrationPos) {
-        if (!this.isAiDisabled() && !(this.emergeTicksLeft > 0) && this.world.getTime() - this.vibrationTimer >= 23) {
+        boolean shouldListen = true;
+        if (eventEntity instanceof PlayerEntity) { shouldListen = !((PlayerEntity)eventEntity).getAbilities().creativeMode; }
+        if (!this.isAiDisabled() && shouldListen && !(this.emergeTicksLeft > 0) && this.world.getTime() - this.vibrationTimer >= 23) {
             this.sniffTicksLeft=-1;
             this.lasteventpos = eventPos;
             this.lasteventworld = eventWorld;
@@ -150,34 +159,30 @@ public class WardenEntity extends HostileEntity {
             this.leaveTime = this.world.getTime() + 1200;
             this.world.sendEntityStatus(this, (byte)7);
             this.vibrationTimer=this.world.getTime();
-            this.world.playSound(null, this.getBlockPos().up(2), RegisterSounds.ENTITY_WARDEN_VIBRATION, SoundCategory.HOSTILE, 0.5F, world.random.nextFloat() * 0.2F + 0.8F);
+            this.world.playSound(null, this.getBlockPos().up(2), RegisterSounds.ENTITY_WARDEN_VIBRATION, SoundCategory.HOSTILE, 0.5F, world.random.nextFloat() * (this.trueOverallAnger()/120F) + 0.9F);
             if (vibrationPos != null) { CreateVibration(this.world, this, vibrationPos); }
             else { CreateVibration(this.world, this, lasteventpos); }
             if (eventEntity != null) {
                 addSuspicion(eventEntity, suspicion);
                 if (this.world.getTime()-reactionSoundTimer>40) { this.reactionSoundTimer=this.world.getTime();
-                    if (getSuspicion(eventEntity)<15 && getSuspicion(eventEntity)>10) {
-                        //Very Angry
-                        this.world.playSound(null, this.getCameraBlockPos(), RegisterSounds.ENTITY_WARDEN_ANGRY, SoundCategory.HOSTILE, 1.0F, world.random.nextFloat() * 0.2F + 0.8F);
-                    } else if (getSuspicion(eventEntity)>=15) {
-                        //Angry
-                        this.world.playSound(null, this.getCameraBlockPos(), RegisterSounds.ENTITY_WARDEN_ANGRY, SoundCategory.HOSTILE, 1.0F, world.random.nextFloat() * 0.2F + 0.8F);
-                    } else if (this.overallAnger()<10) {
-                        //Slightly Angry
+                    if (getSuspicion(eventEntity)<13 && getSuspicion(eventEntity)>10) {
                         this.world.playSound(null, this.getCameraBlockPos(), RegisterSounds.ENTITY_WARDEN_SLIGHTLY_ANGRY, SoundCategory.HOSTILE, 1.0F, world.random.nextFloat() * 0.2F + 0.8F);
-                    } else if (this.overallAnger()<5) {
-                        //Neutral
+                    } else if (getSuspicion(eventEntity)<25) {
                         this.world.playSound(null, this.getCameraBlockPos(), RegisterSounds.ENTITY_WARDEN_SLIGHTLY_ANGRY, SoundCategory.HOSTILE, 1.0F, world.random.nextFloat() * 0.2F + 0.8F);
+                    } else if (this.trueOverallAnger()<40) {
+                        this.world.playSound(null, this.getCameraBlockPos(), RegisterSounds.ENTITY_WARDEN_ANGRY, SoundCategory.HOSTILE, 1.0F, world.random.nextFloat() * 0.2F + 0.8F);
+                    } else if (this.trueOverallAnger()>=41) {
+                        this.world.playSound(null, this.getCameraBlockPos(), RegisterSounds.ENTITY_WARDEN_ANGRY, SoundCategory.HOSTILE, 1.0F, world.random.nextFloat() * 0.2F + 0.8F);
                     }
                 }
             } else { this.timeSinceNonEntity = this.world.getTime();
                 this.nonEntityAnger=this.nonEntityAnger+3;
                 if (this.world.getTime()-reactionSoundTimer>40) {
                     this.reactionSoundTimer = this.world.getTime();
-                    if (this.overallAnger()<5) {
+                    if (this.trueOverallAnger()<25) {
                         this.world.playSound(null, this.getCameraBlockPos(), RegisterSounds.ENTITY_WARDEN_SLIGHTLY_ANGRY, SoundCategory.HOSTILE, 1.0F, world.random.nextFloat() * 0.2F + 0.8F);
                     } else {
-                        this.world.playSound(null, this.getCameraBlockPos(), RegisterSounds.ENTITY_WARDEN_SLIGHTLY_ANGRY, SoundCategory.HOSTILE, 1.0F, world.random.nextFloat() * 0.2F + 0.8F);
+                        this.world.playSound(null, this.getCameraBlockPos(), RegisterSounds.ENTITY_WARDEN_ANGRY, SoundCategory.HOSTILE, 1.0F, world.random.nextFloat() * 0.2F + 0.8F);
                     }
                 }
             }
@@ -219,18 +224,6 @@ public class WardenEntity extends HostileEntity {
         return MathHelper.clamp(total, 3,15);
         }
         return MathHelper.clamp(total, 2,15);
-    }
-    public int overallAnger() {
-        int anger=0;
-        if (this.world.getDifficulty().getId()!=0) {
-            Box box = new Box(this.getBlockPos().add(-24, -24, -24), this.getBlockPos().add(24, 24, 24));
-            List<LivingEntity> entities = world.getNonSpectatingEntities(LivingEntity.class, box);
-            if (!entities.isEmpty()) {
-                for (LivingEntity target : entities) {anger = anger + this.getSuspicion(target); }
-            }
-            anger = anger + nonEntityAnger;
-            anger = MathHelper.clamp(anger, 0, 50);
-        } return anger / 2;
     }
     public int trueOverallAnger() {
         int anger=0;
@@ -451,7 +444,6 @@ public class WardenEntity extends HostileEntity {
             this.hasSentStatusStart=true;
         }
         if (this.emergeTicksLeft > 0 && !this.hasEmerged) {
-            digParticles(this.world, this.getBlockPos(), this.emergeTicksLeft);
             this.setInvulnerable(true);
             this.setVelocity(0, 0, 0);
             this.world.sendEntityStatus(this, (byte)19);
@@ -499,14 +491,13 @@ public class WardenEntity extends HostileEntity {
         if (this.sniffCooldown > 0) { --this.sniffCooldown; }
         if (this.sniffTicksLeft == 0) {
             this.sniffTicksLeft = -1;
-            int extraSuspicion = 1;
             if (this.getSniffEntity() != null) {
                 LivingEntity sniffEntity = this.getSniffEntity();
                 this.addSuspicion(sniffEntity, 5);
                 if (sniffEntity != this.getTrackingEntity()) {
-                    this.getNavigation().startMovingTo(sniffX, sniffY, sniffZ, (speed + (MathHelper.clamp(this.getSuspicion(sniffEntity), 0, 15) * 0.02) + (this.overallAnger() * 0.004)));
+                    this.getNavigation().startMovingTo(sniffX, sniffY, sniffZ, (speed + (MathHelper.clamp(this.getSuspicion(sniffEntity), 0, 45) * 0.006) + (this.trueOverallAnger() * 0.002)));
                 } else if (sniffEntity == this.getTrackingEntity()) {
-                    this.getNavigation().startMovingTo(sniffX, sniffY, sniffZ, (speed + (MathHelper.clamp(this.getSuspicion(sniffEntity), 0, 15) * 0.04) + (this.overallAnger() * 0.004)));
+                    this.getNavigation().startMovingTo(sniffX, sniffY, sniffZ, (speed + (MathHelper.clamp(this.getSuspicion(sniffEntity), 0, 45) * 0.013) + (this.trueOverallAnger() * 0.002)));
                 }
             }
         }
@@ -589,7 +580,7 @@ public class WardenEntity extends HostileEntity {
 
     //CLIENT VARIABLES (Use world.sendEntityStatus() to set these, we need to make "fake" variables for the client to use since that method is buggy)
     public long lastClientHeartBeat; //Status 8
-    public int clientEmergeTicks; //Set to 120: Status 9. Subtract: Status 19.
+    public int clientEmergeTicks; //Set to 160: Status 9. Subtract: Status 19.
     public int clientDigTicks; //Set to 60: Status 10. Subtract: Status 22.
     public boolean isEmerging; //Set to true: Status 11. Set to false: Status 12.
     public boolean isDigging; //Set to true: Status 13. Set to false: Status 14.

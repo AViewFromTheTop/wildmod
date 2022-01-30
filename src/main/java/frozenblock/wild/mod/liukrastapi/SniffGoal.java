@@ -55,6 +55,9 @@ public class SniffGoal extends Goal {
             exit = false;
         }
         if (this.mob.world.getDifficulty().getId()==0) { return false; }
+        if (exit && sniffEntity instanceof PlayerEntity) {
+            exit = !((PlayerEntity)sniffEntity).getAbilities().creativeMode;
+        }
         return exit;
     }
 

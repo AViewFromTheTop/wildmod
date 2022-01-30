@@ -1,5 +1,6 @@
 package frozenblock.wild.mod.entity;
 
+import frozenblock.wild.mod.liukrastapi.AnimationAPI;
 import frozenblock.wild.mod.liukrastapi.MathAddon;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.VertexConsumer;
@@ -61,6 +62,7 @@ public class FrogEntityModel extends EntityModel<FrogEntity> {
     }
     @Override
     public void setAngles(@NotNull FrogEntity entity, float limbAngle, float limbDistance, float time, float netHeadYaw, float headPitch){
+        //this.main.pivotY = - 2 + AnimationAPI.easeInOutSine(100, 160, 10, time) + AnimationAPI.easeInOutSine(160, 220, 10, time);
 
         if(entity.getTongue() == 10) {
             this.togueBegin = 100;

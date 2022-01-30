@@ -55,6 +55,7 @@ public class ShriekCounter {
                                 world.spawnEntity(warden);
                                 warden.handleStatus((byte) 5);
                                 warden.leaveTime=world.getTime()+1200;
+                                warden.setPersistent();
                                 world.playSound(null, currentCheck, RegisterSounds.ENTITY_WARDEN_EMERGE, SoundCategory.HOSTILE, 1F, 1F);
                                 break;
                         }

@@ -25,9 +25,9 @@
   "biome.twm.mangrove_swamp": "Palude di Mangrovia",
 
   "block.twm.sculk": "Sculk",
-  "block.twm.sculk_vein": "Vena di Sculk",
-  "block.twm.sculk_catalyst": "Catalizzatore di Sculk",
-  "block.twm.sculk_shrieker": "Sculk Strillante",
+  "block.twm.sculk_vein": "Vena Sculk",
+  "block.twm.sculk_catalyst": "Catalizzatore Sculk",
+  "block.twm.sculk_shrieker": "Urlatore Sculk",
 
   "block.twm.deepslate_frame": "Cornice di Deepslate",
 
@@ -38,9 +38,9 @@
   "item.twm.tadpole_bucket": "Secchio con girino",
 
   "block.twm.frog_spawn": "Genberatore di rana",
-  "block.twm.pearlescent_froglight": "Ranalumine perlescente",
-  "block.twm.verdant_froglight": "Ranalumine verdeggiante",
-  "block.twm.ochre_froglight": "Ranalumine ocra",
+  "block.twm.pearlescent_froglight": "Luce di rana perlacea",
+  "block.twm.verdant_froglight": "Luce di rana verdeggiante",
+  "block.twm.ochre_froglight": "Luce di rana ocra",
 
   "entity.twm.frog": "Rana",
   "entity.twm.warden": "Warden",

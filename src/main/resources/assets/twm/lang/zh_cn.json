@@ -35,6 +35,7 @@
   "item.twm.frog_spawn_egg": "青蛙刷怪蛋",
   "item.twm.tadpole_spawn_egg": "蝌蚪刷怪蛋",
   "item.twm.tadpole_bucket": "蝌蚪桶",
+  "item.twm.firefly_spawn_egg": "萤火虫刷怪蛋",
 
   "block.twm.frog_egg": "青蛙产卵",
   "block.twm.pearlescent_froglight": "珍珠蛙光体",
@@ -64,6 +65,7 @@
   "subtitles.entity.warden.emerge":"潜声守卫出现",
   "subtitles.entity.warden.dig":"潜声守卫挖掘",
   "subtitles.entity.warden.ambient":"潜声守卫哀鸣",
+  "subtitles.entity.warden.ambient_angry":"潜声守卫咆哮",
   "subtitles.entity.warden.slightly_angry":"潜声守卫生气",
   "subtitles.entity.warden.angry":"潜声守卫咆哮",
   "subtitles.entity.warden.hurt":"潜声守卫受伤了",
@@ -79,5 +81,6 @@
   "subtitles.twm.nearby_close":"?",
   "subtitles.twm.nearby_closer":"??",
   "subtitles.twm.nearby_closest":"???",
-  "subtitles.entity.warden.heartbeat":"心跳"
+  "subtitles.entity.warden.heartbeat":"心跳",
+  "block.twm.frog_spawn": "Frog Spawn"
 }
