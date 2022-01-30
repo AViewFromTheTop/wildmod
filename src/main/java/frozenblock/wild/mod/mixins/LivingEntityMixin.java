@@ -46,26 +46,33 @@ public class LivingEntityMixin {
 
 				if (!entity.world.getGameRules().getBoolean(WildMod.SCULK_THREADING)) {
 					new ActivatorGrower().startActivator(entity, pos);
+
 				} else if (entity.world.getGameRules().getBoolean(WildMod.SCULK_THREADING)) {
 						int numCatalysts = Sphere.generateSphere(pos, 8, false, entity.world);
 						if (SculkTags.THREE.contains(entity.getType())) {
 							entity.emitGameEvent(RegisterAccurateSculk.DEATH, entity, pos);
 							CatalystThreader.main(entity.world, pos, 3, 4, numCatalysts, 7);
+
 						} else if (SculkTags.FIVE.contains(entity.getType())) {
 							entity.emitGameEvent(RegisterAccurateSculk.DEATH, entity, pos);
-							CatalystThreader.main(entity.world, pos, 4, 5, numCatalysts, 7);
+							CatalystThreader.main(entity.world, pos, 5, 5, numCatalysts, 7);
+
 						} else if (SculkTags.TEN.contains(entity.getType())) {
 							entity.emitGameEvent(RegisterAccurateSculk.DEATH, entity, pos);
-							CatalystThreader.main(entity.world, pos, 9, 10, numCatalysts, 6);
+							CatalystThreader.main(entity.world, pos, 10, 10, numCatalysts, 6);
+
 						} else if (SculkTags.TWENTY.contains(entity.getType())) {
 							entity.emitGameEvent(RegisterAccurateSculk.DEATH, entity, pos);
-							CatalystThreader.main(entity.world, pos, 19, 20, numCatalysts, 9);
+							CatalystThreader.main(entity.world, pos, 20, 20, numCatalysts, 9);
+
 						} else if (SculkTags.FIFTY.contains(entity.getType())) {
 							entity.emitGameEvent(RegisterAccurateSculk.DEATH, entity, pos);
-							CatalystThreader.main(entity.world, pos, 59, 50, numCatalysts, 14);
+							CatalystThreader.main(entity.world, pos, 50, 50, numCatalysts, 14);
+
 						} else if (SculkTags.ONEHUNDRED.contains(entity.getType())) {
 							entity.emitGameEvent(RegisterAccurateSculk.DEATH, entity, pos);
-							CatalystThreader.main(entity.world, pos, 1599, 33, numCatalysts, 20);
+							CatalystThreader.main(entity.world, pos, 100, 33, numCatalysts, 20);
+
 						} else if (entity.world.getGameRules().getBoolean(WildMod.CATALYST_DETECTS_ALL)) {
 							entity.emitGameEvent(RegisterAccurateSculk.DEATH, entity, pos);
 							CatalystThreader.main(entity.world, pos, (UniformIntProvider.create(1, 7).get(entity.world.getRandom())) * numCatalysts, (UniformIntProvider.create(1, 7).get(entity.world.getRandom())), numCatalysts, 5);
