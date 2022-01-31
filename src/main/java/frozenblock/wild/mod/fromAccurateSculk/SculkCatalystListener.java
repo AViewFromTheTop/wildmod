@@ -114,7 +114,9 @@ public class SculkCatalystListener implements GameEventListener {
             // Random random = new Random();
             // SculkSpreadFeatures.SCULK_PATCH_SPREAD.generate((ServerWorld) world, manager, random, blockPos.up());
             if (world.getGameRules().getBoolean(WildMod.DO_CATALYST_POLLUTION)) {
-                SculkGrower.sculk(blockPos, world, entity);
+                if (!world.getGameRules().getBoolean(WildMod.SCULK_THREADING)) {
+                    SculkGrower.sculk(blockPos, world, entity);
+                }
                 PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeBlockPos(blockPos2);
                 for (ServerPlayerEntity player : PlayerLookup.around((ServerWorld) world, blockPos2, 32)) {

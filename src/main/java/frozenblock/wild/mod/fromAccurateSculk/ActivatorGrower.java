@@ -41,14 +41,13 @@ public class ActivatorGrower {
     }
 
     public void placeActiveOmptim(int loop, int rVal, int CHANCE, BlockPos pos, LivingEntity entity) { //Call For Placement
-            placeActivator(pos, entity.world, CHANCE);
-            for (int l = 0; l < (loop * entity.world.getGameRules().getInt(WildMod.SCULK_MULTIPLIER)); ++l) {
+            /*for (int l = 0; l < (loop * entity.world.getGameRules().getInt(WildMod.SCULK_MULTIPLIER)); ++l) {
                 double a = random() * 2 * PI;
                 double r = sqrt(rVal * entity.world.getGameRules().getInt(WildMod.SCULK_MULTIPLIER)) * sqrt(random());
                 int x = (int) (r * cos(a));
                 int y = (int) (r * sin(a));
                 placeActivator(pos.add(x, 0, y), entity.world, CHANCE);
-            }
+            }*/
         }
 
     public void placeActivator(BlockPos blockPos, World world, int chance) { //Place Activators

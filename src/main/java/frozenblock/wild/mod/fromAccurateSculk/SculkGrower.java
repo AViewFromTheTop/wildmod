@@ -158,46 +158,19 @@ public class SculkGrower {
         }
     }
     public static void tiltVeinsDown(BlockPos blockPos, World world) { //Tilt Veins Downwards
-        BlockState currentSculk;
         if (!SculkTags.SCULK_UNBENDABLE.contains((world.getBlockState(blockPos.down())).getBlock())) {
             if (world.getBlockState(blockPos.add(1, -1, 0)).getBlock() == SculkVeinBlock.SCULK_VEIN) {
-                currentSculk = world.getBlockState(blockPos.add(1, -1, 0));
-                world.setBlockState(blockPos.add(1, -1, 0), currentSculk.with(Properties.WEST, true));
-                if (world.getBlockState(blockPos.add(-1, -1, 0)).getBlock() == SculkVeinBlock.SCULK_VEIN) {
-                    currentSculk = world.getBlockState(blockPos.add(-1, -1, 0));
-                    world.setBlockState(blockPos.add(-1, -1, 0), currentSculk.with(Properties.EAST, true));
-                    if (world.getBlockState(blockPos.add(0, -1, -1)).getBlock() == SculkVeinBlock.SCULK_VEIN) {
-                        currentSculk = world.getBlockState(blockPos.add(0, -1, -1));
-                        world.setBlockState(blockPos.add(0, -1, -1), currentSculk.with(Properties.SOUTH, true));
-                        if (world.getBlockState(blockPos.add(0, -1, 1)).getBlock() == SculkVeinBlock.SCULK_VEIN) {
-                            currentSculk = world.getBlockState(blockPos.add(0, -1, 1));
-                            world.setBlockState(blockPos.add(0, -1, 1), currentSculk.with(Properties.NORTH, true));
-                        }
-                    }
-                }
-            } else if (world.getBlockState(blockPos.add(-1, -1, 0)).getBlock() == SculkVeinBlock.SCULK_VEIN) {
-                currentSculk = world.getBlockState(blockPos.add(-1, -1, 0));
-                world.setBlockState(blockPos.add(-1, -1, 0), currentSculk.with(Properties.EAST, true));
-                if (world.getBlockState(blockPos.add(0, -1, -1)).getBlock() == SculkVeinBlock.SCULK_VEIN) {
-                    currentSculk = world.getBlockState(blockPos.add(0, -1, -1));
-                    world.setBlockState(blockPos.add(0, -1, -1), currentSculk.with(Properties.SOUTH, true));
-                    if (world.getBlockState(blockPos.add(0, -1, 1)).getBlock() == SculkVeinBlock.SCULK_VEIN) {
-                        currentSculk = world.getBlockState(blockPos.add(0, -1, 1));
-                        world.setBlockState(blockPos.add(0, -1, 1), currentSculk.with(Properties.NORTH, true));
-                    }
-                }
-            } else if (world.getBlockState(blockPos.add(0, -1, -1)).getBlock() == SculkVeinBlock.SCULK_VEIN) {
-                currentSculk = world.getBlockState(blockPos.add(0, -1, -1));
-                world.setBlockState(blockPos.add(0, -1, -1), currentSculk.with(Properties.SOUTH, true));
-                if (world.getBlockState(blockPos.add(0, -1, 1)).getBlock() == SculkVeinBlock.SCULK_VEIN) {
-                    currentSculk = world.getBlockState(blockPos.add(0, -1, 1));
-                    world.setBlockState(blockPos.add(0, -1, 1), currentSculk.with(Properties.NORTH, true));
-                }
-            } else if (world.getBlockState(blockPos.add(0, -1, 1)).getBlock() == SculkVeinBlock.SCULK_VEIN) {
-                currentSculk = world.getBlockState(blockPos.add(0, -1, 1));
-                world.setBlockState(blockPos.add(0, -1, 1), currentSculk.with(Properties.NORTH, true));
+                world.setBlockState(blockPos.add(1, -1, 0), world.getBlockState(blockPos.add(1, -1, 0)).with(Properties.WEST, true));
             }
-        }
+            if (world.getBlockState(blockPos.add(-1, -1, 0)).getBlock() == SculkVeinBlock.SCULK_VEIN) {
+                world.setBlockState(blockPos.add(-1, -1, 0), world.getBlockState(blockPos.add(-1, -1, 0)).with(Properties.EAST, true));
+            }
+            if (world.getBlockState(blockPos.add(0, -1, -1)).getBlock() == SculkVeinBlock.SCULK_VEIN) {
+                world.setBlockState(blockPos.add(0, -1, -1), world.getBlockState(blockPos.add(0, -1, -1)).with(Properties.SOUTH, true));
+            }
+            if (world.getBlockState(blockPos.add(0, -1, 1)).getBlock() == SculkVeinBlock.SCULK_VEIN) {
+                world.setBlockState(blockPos.add(0, -1, 1), world.getBlockState(blockPos.add(0, -1, 1)).with(Properties.NORTH, true));}
+            }
     }
 
     /** CAlCULATIONS & CHECKS */
